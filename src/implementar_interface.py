@@ -21,14 +21,23 @@ def setarinputs(janela: interface.Janela):
     janela.addInputs([inpu1])
 
 
+def setarquads(janela: interface.Janela):
+    quad1 = interface.Quadrado(150, 50, 10, [10, 10, 10])
+    janela.addQuads([quad1])
+
+
 def main():
+    """inicia um objeto Janela, seta suas caracteristicas iniciais, 
+    assim como seu botões, textos inputs e imagens. retorna o objeto"""
     janela = interface.Janela(300, 200, "menu")
     setarbots(janela)
     setartextos(janela)
     setarinputs(janela)
+    setarquads(janela)
     janela.iniciar()
-    janela.main_loop()
+    return janela
 
 
 if __name__ == "__main__":
-    main()
+    janela = main()
+    janela.main_loop()
