@@ -40,8 +40,9 @@ class Grupo:
 
 class Janela:
     """padroniza o comportamento de uma janela, a interface"""
-    def __init__(self, w: int, h: int, nome: str):
-        """recebe a largura, altura e o nome da janela"""
+    def __init__(self, w: int, h: int, nome: str, steps:list=None):
+        """recebe a largura, altura, o nome da janela e uma lista de
+        funções para serem rodadas dentro do main loop"""
         self.w = w
         self.h = h
         self.nome = nome
@@ -51,6 +52,7 @@ class Janela:
         self.quads = []
         self.inpu = None
         self.run = False
+        self.steps = steps
 
     def iniciar(self):
         """inicia a janela, atribui o titulo, dimensoes e fonte"""
@@ -168,6 +170,10 @@ class Janela:
         self.run = True
         while self.run:
             self.atualizar_janela()
+            if self.steps != None:
+                for step in self.steps:
+                    step()
+
             for event in pygame.event.get(): # filtragem de eventos
                 if event.type == pygame.QUIT: # fechar a janela
                     self.run = False
