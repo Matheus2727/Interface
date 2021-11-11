@@ -3,6 +3,40 @@ import pygame
 pygame.init()
 pygame.font.init()
 
+class Grupo:
+    # agrupa objetos Janela a serem usados pelo programa. contem metodos para
+    # adicionar mais janelas e alterar a janela sendo visualizada
+    def __init__(self):
+        self.janelas = []
+        self.main_janela = None
+    
+    def adicionar_janelas(self, janelas:list):
+        """recebe uma lista de objetos Janela e adiciona-os no grupo"""
+        for janela in janelas:
+            self.janelas.append(janela)
+    
+    def trocar_janela(self, alvo:str):
+        """recebe o nome de uma janela e torna essa janela como principal se
+        for encontrada"""
+        for janela in self.janelas:
+            if janela.nome == alvo:
+                if self.main_janela is not None:
+                    self.main_janela.run = False
+
+                self.main_janela = janela
+                self.main_janela.iniciar()
+                break
+    
+    def main_loop(self):
+        """o loop principal o qual permite que o loop de uma janela seja
+        terminado pela função trocar_janela e outro seja iniciado. se o
+        loop da interface for terminado pois a janela foi fechada, o loop
+        do grupo é terminado tbm"""
+        run = True
+        while run:
+             novo_run = self.main_janela.main_loop()
+             if novo_run == False:
+                 run = False
 
 class Janela:
     """padroniza o comportamento de uma janela, a interface"""
@@ -16,6 +50,7 @@ class Janela:
         self.inputs = [] # lista de inputs de texto da janela
         self.quads = []
         self.inpu = None
+        self.run = False
 
     def iniciar(self):
         """inicia a janela, atribui o titulo, dimensoes e fonte"""
@@ -129,13 +164,14 @@ class Janela:
 
     def main_loop(self):
         """o loop principal da janela, onde a atualização da tela é chamada e
-        eventos são lidos"""
-        run = True
-        while run:
+        eventos são lidos. Se a janela for fechada, o bool False é retornado"""
+        self.run = True
+        while self.run:
             self.atualizar_janela()
             for event in pygame.event.get(): # filtragem de eventos
                 if event.type == pygame.QUIT: # fechar a janela
-                    run = False
+                    self.run = False
+                    return False
 
                 elif event.type == pygame.MOUSEBUTTONUP: # click
                     pos = pygame.mouse.get_pos()
